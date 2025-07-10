@@ -2,19 +2,14 @@
 ### If repeated is zero, the root and root_copy are included in the output, however polority seems to not be included in the current version. Need to fix the code so PVs are applied, but then that transform row is not repeated. 
 
 import numpy as np
-import pandas as pdP
+import pandas as pd
 import random
 import os
 from IPython.display import clear_output
-import logging
 from phorms_mod_table import phorms_mod_table
 
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # Enki class definition
-class Enki_V2:
+class Enki_V3:
     def __init__(self, output_dir: str = "F:/Enki_V3/data/alpha_output", mod_table_version: str = "default"):
 
         self.N = None
@@ -55,15 +50,12 @@ class Enki_V2:
                     "Enki: Enter an integer for n (6-15) or 'q' to quit: \n"
                 ).strip().lower()
                 if user_input == 'q':
-                    logger.info("Exiting...")
                     return None
                 n = int(user_input)
                 if 6 <= n <= 15:
-                    logger.info(f"User chose to Let n = {n}.\n")
                     return n
-                logger.warning("Invalid input. Enter an integer between 6 and 15.")
             except ValueError:
-                logger.warning("Invalid input. Please enter a valid integer.")
+                pass
 
     # This function is the main user interface that interacts with the user
     def Enki_User_Interface(self):
@@ -71,19 +63,14 @@ class Enki_V2:
         while True:
             n = self.get_user_input()
             if n is not None:
-                logger.info(f"Enki: User, would you like to continue with n = {n} ?\n")
                 user_response = input("Enter 'y' to continue or 'q' to quit and start over: \n").strip().lower()
                 if user_response == 'y':
-                    logger.info(f"Enki: User has chosen to continue with n = {n}.\n")
                     return n
                 elif user_response == 'q':
-                    logger.info("Restarting the process...\n")
                     continue
                 else:
-                    logger.warning("Invalid response. Restarting the process...\n")
                     continue
             else:
-                logger.warning("No value for n, user chose to quit.")
                 break
 
     # Step 2: Create the base array (phi_)
@@ -403,9 +390,8 @@ class Enki_V2:
         # Step 1: Get user input for N
         self.N = self.Enki_User_Interface()
         if self.N is None:
-            logger.info("Exiting pipeline as user chose to quit.")
             return
-        print(f"N: {self.N}")  # Print the value of N
+        print(f"\nN: {self.N}")  # Print the value of N
 
         # Step 2: Create the base array (phi_)
         self.create_base()
@@ -480,7 +466,7 @@ class Enki_V2:
         self.transphorm_alpha_dataframe()
 
         # Ensure the directory exists
-        output_dir = r"F:/Enki_V2/data/alpha_output"
+        output_dir = r"F:/Enki_V3/data/alpha_output"
         os.makedirs(output_dir, exist_ok=True)
         self.output_dir = output_dir
 
@@ -517,5 +503,5 @@ class Enki_V2:
 
 
 if __name__ == "__main__":
-    enki = Enki_V2()
+    enki = Enki_V3()
     enki.run_pipeline()
