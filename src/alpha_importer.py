@@ -373,6 +373,51 @@ class AlphaImporter:
             else:
                 print(f"   {key}: {value}")
     
+    def encode_to_musicxml(self) -> None:
+        """
+        Encode the loaded alpha data to MusicXML format.
+        This is a placeholder method for the encoding pipeline.
+        """
+        if self.loaded_data is None:
+            print("❌ No data loaded. Please load a file first.")
+            return
+        
+        df = self.get_dataframe()
+        if df is None:
+            print("❌ Could not retrieve dataframe for encoding.")
+            return
+        
+        print(f"\n{'='*60}")
+        print("🎵 ENCODING TO MUSICXML")
+        print(f"{'='*60}")
+        print(f"Source file: {self.current_file}")
+        print(f"Data shape: {df.shape}")
+        
+        # Calculate total arrays for encoding
+        total_arrays = 0
+        if 'Alpha_Phormed' in df.columns:
+            for _, row in df.iterrows():
+                alpha_value = row['Alpha_Phormed']
+                if isinstance(alpha_value, list):
+                    total_arrays += len(alpha_value)
+        
+        print(f"Total arrays to encode: {total_arrays:,}")
+        print()
+        print("🚧 ENCODING PIPELINE STATUS:")
+        print("   ✅ Alpha data loaded and ready")
+        print("   🔄 Moving to encoding stage...")
+        print("   ⏳ Encoding mapper class: [TO BE IMPLEMENTED]")
+        print("   ⏳ Integer-to-musical parameter mapping: [TO BE IMPLEMENTED]")
+        print("   ⏳ MusicXML generation: [TO BE IMPLEMENTED]")
+        print()
+        print("💡 Next development steps:")
+        print("   1. Create encoding mapper class")
+        print("   2. Integrate with existing encoding modules (Chi, Theta, Lambda, Epsilon)")
+        print("   3. Map integer arrays to musical parameters")
+        print("   4. Generate MusicXML output files")
+        print(f"{'='*60}")
+        print("🎵 Ready for encoding implementation!")
+
     def run_interactive_session(self) -> None:
         """
         Run an interactive session to select and display alpha data.
@@ -404,13 +449,15 @@ class AlphaImporter:
             print("1. Display transformed dataframe")
             if has_metadata:
                 print("2. Display metadata")
+                print("3. Encode to MusicXML")
+                print("4. Select different file")
+                print("5. Quit")
+                max_choice = 5
+            else:
+                print("2. Encode to MusicXML")
                 print("3. Select different file")
                 print("4. Quit")
                 max_choice = 4
-            else:
-                print("2. Select different file")
-                print("3. Quit")
-                max_choice = 3
             
             try:
                 choice = input(f"\nSelect option (1-{max_choice}): ").strip()
@@ -421,25 +468,32 @@ class AlphaImporter:
                     if has_metadata:
                         self.display_metadata()
                     else:
-                        # Option 2 is "Select different file" when no metadata
+                        # Option 2 is "Encode to MusicXML" when no metadata
+                        self.encode_to_musicxml()
+                elif choice == '3':
+                    if has_metadata:
+                        # Option 3 is "Encode to MusicXML" when metadata available
+                        self.encode_to_musicxml()
+                    else:
+                        # Option 3 is "Select different file" when no metadata
                         filename = self.select_file_interactive()
                         if filename:
                             if self.load_file(filename):
                                 # Re-check metadata availability for new file
                                 has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
-                elif choice == '3':
+                elif choice == '4':
                     if has_metadata:
-                        # Option 3 is "Select different file" when metadata available
+                        # Option 4 is "Select different file" when metadata available
                         filename = self.select_file_interactive()
                         if filename:
                             if self.load_file(filename):
                                 # Re-check metadata availability for new file
                                 has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
                     else:
-                        # Option 3 is "Quit" when no metadata
+                        # Option 4 is "Quit" when no metadata
                         print("👋 Goodbye!")
                         break
-                elif choice == '4' and has_metadata:
+                elif choice == '5' and has_metadata:
                     print("👋 Goodbye!")
                     break
                 else:
