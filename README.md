@@ -33,7 +33,12 @@ python enki_pipeline.py help    # Show help
   - `Theta`: Note pitches (A, B, C, C#, D, etc.)
   - `Lambda`: Octave selection (register/pitch height)
   - `Epsilon`: Musical modifiers (ties, slurs, dynamics, articulations)
-- **Musically-Aware Transformations**: Choose between transformation approaches:
+- **Multiple Transformation Selection**: Choose one or many transformation approaches:
+  - **Single Selection**: Choose one mod table (e.g., `6` for harmonic only)
+  - **Multiple Selection**: Choose several mod tables (e.g., `4,6,7` for chromatic, harmonic, and modal)
+  - **Musical Batch**: Enter `music` for all musical transformations (chromatic, rhythmic, harmonic, modal, octave)
+  - **Complete Batch**: Enter `all` for every available transformation
+- **Transformation Options**:
   - `default`: Standard mathematical transformations
   - `increment`: Incremental mathematical transformations  
   - `custom`: Custom mathematical transformations
@@ -42,6 +47,7 @@ python enki_pipeline.py help    # Show help
   - `harmonic`: Theta-focused (chord building, harmonic relationships)
   - `modal`: Theta variations (major, minor, modal scales)
   - `octave`: Lambda-focused (register shifts, octave transpositions)
+- **Automatic File Naming**: Each transformation exports with its own suffix (e.g., `_harmonic.pkl`, `_modal.pkl`)
 - **Multiple Run Modes**: Interactive, test, demo, and help modes
 
 ### From Any Directory:

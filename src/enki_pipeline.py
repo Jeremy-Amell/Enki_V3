@@ -7,7 +7,8 @@ Demonstrates the separation of data generation and transformation using the refa
 Features:
 - Interactive data generation with user input for N value
 - Musical parameter generation: Chi (durations), Theta (pitches), Lambda (octaves), Epsilon (modifiers)
-- Mod table selection with musically-aware transformations
+- Multiple mod table selection with musically-aware transformations
+- Batch processing: Generate multiple transformations from the same source data
 - Multiple run modes for different use cases
 - Clean separation between data generation and transformation
 
@@ -47,13 +48,13 @@ import numpy as np
 
 def choose_mod_table():
     """
-    Interactive function to let users choose their preferred mod table version.
+    Interactive function to let users choose their preferred mod table version(s).
     
     Returns:
-        str: The selected mod table version
+        list: List of selected mod table versions, or None if cancelled
     """
     print("\n" + "="*60)
-    print("SELECT MOD TABLE VERSION")
+    print("SELECT MOD TABLE VERSION(S)")
     print("="*60)
     
     mod_table_options = {
@@ -96,25 +97,68 @@ def choose_mod_table():
         print(f"   {key}. {info['name'].upper()}")
         print(f"      └─ {info['description']}")
     
+    print("\n🎯 Selection Options:")
+    print("   • Single choice: Enter one number (e.g., '4' for chromatic only)")
+    print("   • Multiple choices: Enter numbers separated by commas (e.g., '4,6,7' for chromatic, harmonic, and modal)")
+    print("   • All musical: Enter 'music' for all musical transformations (4,5,6,7,8)")
+    print("   • All available: Enter 'all' for every transformation option")
+    
     while True:
         try:
-            print(f"\nPlease choose a mod table version (1-{len(mod_table_options)}):", end=" ")
-            choice = input().strip()
+            print(f"\nPlease choose mod table version(s) (1-{len(mod_table_options)}):", end=" ")
+            choice = input().strip().lower()
             
-            if choice in mod_table_options:
-                selected = mod_table_options[choice]
-                print(f"✅ Selected: {selected['name'].upper()}")
-                print(f"   Description: {selected['description']}")
+            selected_versions = []
+            
+            # Handle special keywords
+            if choice == 'all':
+                selected_versions = [info['name'] for info in mod_table_options.values()]
+                print("✅ Selected: ALL TRANSFORMATIONS")
+                for info in mod_table_options.values():
+                    print(f"   ✓ {info['name'].upper()}")
+                    
+            elif choice == 'music':
+                musical_keys = ['4', '5', '6', '7', '8']  # chromatic, rhythmic, harmonic, modal, octave
+                selected_versions = [mod_table_options[key]['name'] for key in musical_keys]
+                print("✅ Selected: ALL MUSICAL TRANSFORMATIONS")
+                for key in musical_keys:
+                    info = mod_table_options[key]
+                    print(f"   ✓ {info['name'].upper()}")
+                    
+            else:
+                # Handle comma-separated choices
+                choices = [c.strip() for c in choice.split(',')]
+                valid_choices = []
                 
+                for c in choices:
+                    if c in mod_table_options:
+                        valid_choices.append(c)
+                        selected_versions.append(mod_table_options[c]['name'])
+                    else:
+                        print(f"❌ Invalid choice '{c}'. Please enter numbers between 1 and {len(mod_table_options)}.")
+                        break
+                else:
+                    if valid_choices:
+                        print("✅ Selected transformations:")
+                        for c in valid_choices:
+                            info = mod_table_options[c]
+                            print(f"   ✓ {info['name'].upper()} - {info['description']}")
+            
+            if selected_versions:
                 # Confirm choice
-                confirm = input(f"\nConfirm selection of '{selected['name']}' mod table? (y/n): ").strip().lower()
+                if len(selected_versions) == 1:
+                    confirm_msg = f"Confirm selection of '{selected_versions[0]}' mod table? (y/n): "
+                else:
+                    confirm_msg = f"Confirm selection of {len(selected_versions)} mod tables? (y/n): "
+                    
+                confirm = input(f"\n{confirm_msg}").strip().lower()
                 if confirm in ['y', 'yes', '']:
-                    return selected['name']
+                    return selected_versions
                 else:
                     print("Selection cancelled. Please choose again.")
                     continue
             else:
-                print(f"❌ Invalid choice '{choice}'. Please enter a number between 1 and {len(mod_table_options)}.")
+                print("No valid selections made. Please try again.")
                 
         except KeyboardInterrupt:
             print("\n❌ Selection cancelled by user.")
@@ -152,63 +196,83 @@ def main():
         print(f"   - Phi array: {alpha_data['phi_']}")
         print(f"   - Alpha phorms shape: {alpha_data['alpha_phorms_dataframe'].shape}")
         
-        # Step 2: Choose mod table version
-        selected_mod_table = choose_mod_table()
-        if selected_mod_table is None:
+        # Step 2: Choose mod table version(s)
+        selected_mod_tables = choose_mod_table()
+        if selected_mod_tables is None:
             print("❌ Mod table selection was cancelled.")
             return False
         
-        # Step 3: Transform the data using AlphaTransformer
+        # Step 3: Transform the data using AlphaTransformer for each selected mod table
         print("\n" + "="*60)
-        print("ALPHA TRANSFORMATION")
+        print("ALPHA TRANSFORMATION(S)")
         print("="*60)
         
-        # Create transformer with selected mod table
-        transformer = AlphaTransformer(
-            mod_table_version=selected_mod_table,
-            output_dir="F:/Enki_V3/data/alpha_output"
-        )
+        successful_exports = []
+        failed_exports = []
         
-        print("Transformer initialized with:")
-        print(f"   - Mod table version: {transformer.mod_table_version}")
-        print(f"   - Output directory: {transformer.output_dir}")
-        
-        # Transform the alpha data
-        print("\nStarting transformation process...")
-        transformed_data = transformer.transform_alpha_dataframe(
-            alpha_data['alpha_phorms_dataframe']
-        )
-        
-        if transformed_data is not None:
-            print("✅ Transformation completed successfully!")
-            print(f"   - Transformed data shape: {transformed_data.shape}")
+        for i, mod_table_name in enumerate(selected_mod_tables, 1):
+            print(f"\n🔄 Processing transformation {i}/{len(selected_mod_tables)}: {mod_table_name.upper()}")
+            print("-" * 50)
             
-            # Export the transformed data
-            print("\nExporting transformed data...")
-            output_file = transformer.export_transformed_data(
-                N=alpha_data['N'],
-                phi_=alpha_data['phi_']
+            # Create transformer with selected mod table
+            transformer = AlphaTransformer(
+                mod_table_version=mod_table_name,
+                output_dir="F:/Enki_V3/data/alpha_output"
             )
             
-            if output_file:
-                print(f"✅ Export completed successfully!")
-                print(f"   - File saved to: {output_file}")
-                print(f"   - File size: {os.path.getsize(output_file)} bytes")
+            print(f"   - Mod table version: {transformer.mod_table_version}")
+            print(f"   - Output directory: {transformer.output_dir}")
+            
+            # Transform the alpha data
+            print(f"   - Starting {mod_table_name} transformation...")
+            transformed_data = transformer.transform_alpha_dataframe(
+                alpha_data['alpha_phorms_dataframe']
+            )
+            
+            if transformed_data is not None:
+                print(f"   ✅ {mod_table_name} transformation completed!")
+                print(f"      └─ Transformed data shape: {transformed_data.shape}")
+                
+                # Export the transformed data
+                print(f"   - Exporting {mod_table_name} data...")
+                output_file = transformer.export_transformed_data(
+                    N=alpha_data['N'],
+                    phi_=alpha_data['phi_']
+                )
+                
+                if output_file:
+                    print(f"   ✅ {mod_table_name} export completed!")
+                    print(f"      └─ File: {output_file.split('/')[-1]}")
+                    print(f"      └─ Size: {os.path.getsize(output_file)} bytes")
+                    successful_exports.append((mod_table_name, output_file))
+                else:
+                    print(f"   ❌ {mod_table_name} export failed!")
+                    failed_exports.append(mod_table_name)
             else:
-                print("❌ Export failed!")
-                return False
-        else:
-            print("❌ Transformation failed!")
-            return False
+                print(f"   ❌ {mod_table_name} transformation failed!")
+                failed_exports.append(mod_table_name)
         
         print("\n" + "="*60)
-        print("🎉 PIPELINE COMPLETED SUCCESSFULLY! 🎉")
+        print("🎉 PIPELINE COMPLETED! 🎉")
         print("="*60)
         print("\nSummary:")
         print(f"✓ Generated data for N={alpha_data['N']}")
         print(f"✓ Processed {len(alpha_data['alpha_values'])} alpha values")
-        print(f"✓ Applied transformations using '{selected_mod_table.upper()}' mod table")
-        print(f"✓ Exported results to: {output_file}")
+        
+        if successful_exports:
+            print(f"✓ Successfully applied {len(successful_exports)} transformation(s):")
+            for mod_table_name, output_file in successful_exports:
+                print(f"   ✓ {mod_table_name.upper()}: {output_file.split('/')[-1]}")
+        
+        if failed_exports:
+            print(f"❌ Failed transformations ({len(failed_exports)}):")
+            for mod_table_name in failed_exports:
+                print(f"   ❌ {mod_table_name.upper()}")
+        
+        # Return success only if we have at least one successful export
+        if not successful_exports:
+            print("\n❌ No transformations were successful!")
+            return False
         
         # Future: You could easily add different transformation types
         print("\n🎵 Musical transformations now available!")

@@ -115,9 +115,9 @@ class AlphaTransformer:
             print("No data to export. The DataFrame is empty or undefined.")
             return None
             
-        # Define the output file path
+        # Define the output file path with mod table suffix
         phi_str = '_'.join(map(str, phi_))
-        filename = f"alpha_transphormed_N{N}_phi_{phi_str}.pkl"
+        filename = f"alpha_transphormed_N{N}_phi_{phi_str}_{self.mod_table_version}.pkl"
         output_file = os.path.join(self.output_dir, filename)
 
         try:
