@@ -11,6 +11,7 @@ Features:
 - Batch processing: Generate multiple transformations from the same source data
 - Multiple run modes for different use cases
 - Clean separation between data generation and transformation
+- Organized project structure with dedicated tests directory
 
 To run this script:
 1. Navigate to the src directory: cd f:\Enki_V3\src
@@ -294,6 +295,7 @@ def main():
         print(f"   - enki_class_v2.py")
         print(f"   - alpha_transformer.py") 
         print(f"   - phorms_mod_table.py")
+        print(f"   - tests/ directory for development files")
         return False
 
 
