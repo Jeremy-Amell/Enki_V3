@@ -103,14 +103,13 @@ class AlphaTransformer:
             if not all(isinstance(x, int) for x in array):
                 raise ValueError(f"Invalid data type: All elements must be integers. Found: {array}")
     
-    def export_transformed_data(self, N, phi_, filename_suffix=""):
+    def export_transformed_data(self, N, phi_):
         """
         Export the transformed DataFrame to a pickle file.
         
         Args:
             N: The N value used in generation
             phi_: The phi array used in generation
-            filename_suffix: Optional suffix for the filename
         """
         if self.transphormed_alpha_dataframe is None:
             print("No data to export. The DataFrame is empty or undefined.")
@@ -118,7 +117,7 @@ class AlphaTransformer:
             
         # Define the output file path
         phi_str = '_'.join(map(str, phi_))
-        filename = f"alpha_transphormed_N{N}_phi_{phi_str}{filename_suffix}.pkl"
+        filename = f"alpha_transphormed_N{N}_phi_{phi_str}.pkl"
         output_file = os.path.join(self.output_dir, filename)
 
         try:

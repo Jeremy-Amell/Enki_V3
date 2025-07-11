@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""
-Example usage of the refactored Enki system.
-This demonstrates the separation of data generation and transformation.
+r"""
+Enki V3 Batch Processing Script
+This script provides a complete pipeline for Enki data generation and transformation.
+Demonstrates the separation of data generation and transformation using the refactored architecture.
 
 To run this script:
 1. Navigate to the src directory: cd f:\Enki_V3\src
-2. Run: python example_usage.py
+2. Run: python enki_batch.py
 
 OR to run from anywhere:
-python f:\Enki_V3\src\example_usage.py
+python f:\Enki_V3\src\enki_batch.py
+
+OR use the Windows batch file:
+f:\Enki_V3\run_enki.bat
 """
 
 # Standard library imports
@@ -88,8 +92,7 @@ def main():
             print("\nExporting transformed data...")
             output_file = transformer.export_transformed_data(
                 N=alpha_data['N'],
-                phi_=alpha_data['phi_'],
-                filename_suffix="_refactored"
+                phi_=alpha_data['phi_']
             )
             
             if output_file:
@@ -252,9 +255,9 @@ if __name__ == "__main__":
     Main execution block - runs when script is executed directly.
     
     Usage options:
-    1. python example_usage.py              # Full interactive pipeline
-    2. python example_usage.py test         # Quick automated test
-    3. python example_usage.py demo         # Demonstrate flexibility
+    1. python enki_batch.py              # Full interactive pipeline
+    2. python enki_batch.py test         # Quick automated test
+    3. python enki_batch.py demo         # Demonstrate flexibility
     """
     
     # Check command line arguments for different run modes
@@ -271,10 +274,10 @@ if __name__ == "__main__":
             
         elif mode == "help":
             print("📖 ENKI V3 Usage Help:")
-            print("   python example_usage.py        # Full interactive pipeline")
-            print("   python example_usage.py test   # Quick automated test")
-            print("   python example_usage.py demo   # Demonstrate flexibility")
-            print("   python example_usage.py help   # Show this help")
+            print("   python enki_batch.py        # Full interactive pipeline")
+            print("   python enki_batch.py test   # Quick automated test")
+            print("   python enki_batch.py demo   # Demonstrate flexibility")
+            print("   python enki_batch.py help   # Show this help")
             sys.exit(0)
             
         else:

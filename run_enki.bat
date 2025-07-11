@@ -11,8 +11,8 @@ REM Change to the src directory
 cd /d "F:\Enki_V3\src"
 
 REM Check if we're in the right directory
-if not exist "example_usage.py" (
-    echo ERROR: Cannot find example_usage.py
+if not exist "enki_batch.py" (
+    echo ERROR: Cannot find enki_batch.py
     echo Make sure you're running this from the correct directory
     pause
     exit /b 1
@@ -26,19 +26,19 @@ if "%1"=="" (
     echo Running FULL INTERACTIVE pipeline...
     echo You will be prompted for input during execution.
     echo.
-    python example_usage.py
+    python enki_batch.py
 ) else if "%1"=="test" (
     echo Running QUICK TEST mode...
     echo No user input required.
     echo.
-    python example_usage.py test
+    python enki_batch.py test
 ) else if "%1"=="demo" (
     echo Running DEMONSTRATION mode...
     echo.
-    python example_usage.py demo
+    python enki_batch.py demo
 ) else if "%1"=="help" (
     echo.
-    python example_usage.py help
+    python enki_batch.py help
 ) else (
     echo Unknown option: %1
     echo.
