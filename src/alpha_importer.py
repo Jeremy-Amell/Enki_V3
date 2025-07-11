@@ -67,6 +67,17 @@ class AlphaImporter:
             print(f"   Make sure you've run the pipeline and generated some data first.")
             return
         
+        # Find the most recently created file
+        most_recent_file = None
+        most_recent_time = 0
+        
+        for filename in files:
+            file_path = self.input_dir / filename
+            creation_time = file_path.stat().st_mtime
+            if creation_time > most_recent_time:
+                most_recent_time = creation_time
+                most_recent_file = filename
+        
         print(f"\n{'='*60}")
         print("AVAILABLE ALPHA OUTPUT FILES")
         print(f"{'='*60}")
@@ -76,6 +87,10 @@ class AlphaImporter:
         for i, filename in enumerate(files, 1):
             file_path = self.input_dir / filename
             file_size = file_path.stat().st_size
+            
+            # Check if this is the most recent file
+            is_most_recent = (filename == most_recent_file)
+            recent_marker = " 🆕 [MOST RECENT]" if is_most_recent else ""
             
             # Parse filename to extract info
             if "_transphormed_" in filename:
@@ -93,16 +108,21 @@ class AlphaImporter:
                         mod_table = "unknown"
                         n_and_phi = suffix_part
                     
-                    print(f"   {i}. {filename}")
+                    print(f"   {i}. {filename}{recent_marker}")
                     print(f"      └─ Mod Table: {mod_table.upper()}")
                     print(f"      └─ Parameters: {n_and_phi}")
                     print(f"      └─ Size: {file_size:,} bytes")
                 else:
-                    print(f"   {i}. {filename}")
+                    print(f"   {i}. {filename}{recent_marker}")
                     print(f"      └─ Size: {file_size:,} bytes")
             else:
-                print(f"   {i}. {filename}")
+                print(f"   {i}. {filename}{recent_marker}")
                 print(f"      └─ Size: {file_size:,} bytes")
+        
+        # Add a helpful note about the most recent file
+        if most_recent_file:
+            most_recent_index = files.index(most_recent_file) + 1
+            print(f"\n💡 NOTIFICATION: File #{most_recent_index} is the most recently created file")
         
         print()
     
@@ -201,6 +221,18 @@ class AlphaImporter:
         print(f"{'='*60}")
         print(f"Source file: {self.current_file}")
         
+        # Extract and display mod table from filename
+        mod_table = "unknown"
+        if self.current_file and "_transphormed_" in self.current_file:
+            parts = self.current_file.split("_transphormed_")
+            if len(parts) == 2:
+                suffix_part = parts[1].replace(".pkl", "")
+                if "_" in suffix_part:
+                    suffix_parts = suffix_part.split("_")
+                    mod_table = suffix_parts[-1]  # Last part should be mod table name
+        
+        print(f"📋 Mod Table: {mod_table.upper()}")
+        
         df = None
         
         # Handle different data formats
@@ -221,7 +253,6 @@ class AlphaImporter:
             return
         
         # Display dataframe information
-        print(f"   - Shape: {df.shape}")
         print(f"   - Columns: {list(df.columns)}")
         
         # More detailed data type analysis
@@ -391,7 +422,18 @@ class AlphaImporter:
         print("🎵 ENCODING TO MUSICXML")
         print(f"{'='*60}")
         print(f"Source file: {self.current_file}")
-        print(f"Data shape: {df.shape}")
+        
+        # Extract and display mod table from filename  
+        mod_table = "unknown"
+        if self.current_file and "_transphormed_" in self.current_file:
+            parts = self.current_file.split("_transphormed_")
+            if len(parts) == 2:
+                suffix_part = parts[1].replace(".pkl", "")
+                if "_" in suffix_part:
+                    suffix_parts = suffix_part.split("_")
+                    mod_table = suffix_parts[-1]  # Last part should be mod table name
+        
+        print(f"📋 Mod Table: {mod_table.upper()}")
         
         # Calculate total arrays for encoding
         total_arrays = 0
