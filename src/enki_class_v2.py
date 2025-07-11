@@ -6,11 +6,10 @@ import pandas as pd
 import random
 import os
 from IPython.display import clear_output
-from phorms_mod_table import phorms_mod_table
 
 # Enki class definition
 class Enki_V3:
-    def __init__(self, output_dir: str = "F:/Enki_V3/data/alpha_output", mod_table_version: str = "default"):
+    def __init__(self, output_dir: str = "F:/Enki_V3/data/alpha_output"):
 
         self.N = None
         self.phi_ = None
@@ -34,10 +33,7 @@ class Enki_V3:
         self.alpha_roots_df = None
         self.alpha_values = None
         self.alpha_phorms_dataframe = None
-        self.phorms_mod_table_df = None
-        self.transphormed_alpha_dataframe = None
         self.output_dir = output_dir
-        self.mod_table_version = mod_table_version
         os.makedirs(self.output_dir, exist_ok=True)
 
     # User input declaration: Value for n
@@ -57,7 +53,7 @@ class Enki_V3:
             except ValueError:
                 pass
 
-    # This function is the main user interface that interacts with the user
+    # Step 1. This function is the main user interface that interacts with the user
     def Enki_User_Interface(self):
         clear_output(wait=True)
         while True:
@@ -78,7 +74,8 @@ class Enki_V3:
         self.phi_ = np.array([random.randint(0, 9) for _ in range(self.N)])
         return self.phi_
 
-    # Step 3: Create a list of root arrays
+    # Step 3: Create a list of root arrays. They are empty at this point.
+    # This will be used to store the roots of the data triangle.
     def root_arrays(self):
         self.roots_list_ = [
             ("chi_root", np.array([], dtype=int)),
@@ -88,7 +85,8 @@ class Enki_V3:
         ]
         return self.roots_list_
 
-    # Step 4: Create kappa root arrays
+    # Step 4: Create kappa root arrays. They are empty at this point.
+    # This will be used to store the kappa roots of the data triangle.
     def create_kappa_root_arrays(self):
         self.kappa_total = self.N - 4
         self.kappa_roots_ = [(f"kappa_root_{i}", np.array([], dtype=int)) for i in range(self.kappa_total)]
@@ -217,7 +215,8 @@ class Enki_V3:
         self.DT_df = pd.DataFrame(padded_data)
         return self.DT_df
 
-    # Step 13: Create PVA Mods
+    # Step 13: Create PVA Mods. Creates an Array of PVA Mods based on the pva_array.
+    # This is a 2D array where each row corresponds to a PVA Mod.
     def create_PVA_Mods(self):
         """Create and initialize the PVA_Mods attribute."""
         if self.pva_array is None:
@@ -306,200 +305,118 @@ class Enki_V3:
         self.alpha_phorms_dataframe = pd.DataFrame.from_dict(self.alpha_values, orient='index')
         return self.alpha_phorms_dataframe
 
-    # Step 21: Apply Phorms Mod Table DF
-    def phorms_mod_table(self):
+    def get_alpha_data(self):
         """
-        Generate the Phorms Mod Table using the external function.
+        Returns the generated alpha data for use with external transformers.
+        
+        Returns:
+            dict: Dictionary containing all generated data
         """
-        self.phorms_mod_table_df = phorms_mod_table(self.mod_table_version)
-        return self.phorms_mod_table_df
+        return {
+            'N': self.N,
+            'phi_': self.phi_,
+            'alpha_phorms_dataframe': self.alpha_phorms_dataframe,
+            'alpha_values': self.alpha_values,
+            'alpha_roots_df': self.alpha_roots_df,
+            'DT_df': self.DT_df,
+            'PVA_Mods_df': self.PVA_Mods_df,
+            'pva_array': self.pva_array
+        }
 
-# Step 22: Transphorm Alpha Dataframe
-    def transphorm_alpha_dataframe(self, max_value=9):
-        """
-        Transforms the alpha_phorms_dataframe using the phorms_mod_table_df and creates a new DataFrame.
-        Ensures all values in the resulting arrays are integers.
-        """
-        if self.alpha_phorms_dataframe is None:
-            print("Error: alpha_phorms_dataframe is not defined.")
-            self.transphormed_alpha_dataframe = None
-            return None
-
-        # Ensure the mod table is generated
-        if self.phorms_mod_table_df is None:
-            self.phorms_mod_table()
-
-        # Create a copy of the alpha_phorms_dataframe to avoid modifying the original
-        alpha_phorms_dataframe = self.alpha_phorms_dataframe.copy()
-
-        # Initialize a dictionary to store the transformed outputs
-        transformed_data = {}
-
-        # Iterate through each row in the alpha_phorms_dataframe
-        for index, row in alpha_phorms_dataframe.iterrows():
-            # Extract the A_Root, A_Root_Copy, Alpha_PV_Mod, and Repeater values
-            A_Root = [int(x) for x in row['A_Root']]
-            A_Root_Copy = [int(x) for x in row['A_Root_Copy']]
-            Alpha_PV_Mod = [int(x) for x in row['Alpha_PV_Mod']]
-            Repeater = int(row['Repeater'])
-
-            # Initialize a list to store all modified versions of A_Root_Copy
-            modified_versions = [A_Root]  # Start with the original A_Root
-
-            # Apply the transformation using the Mod Table for each value in Alpha_PV_Mod
-            for mod in Alpha_PV_Mod:
-                if mod in self.phorms_mod_table_df.index:
-                    # Apply the transformation to each value in A_Root_Copy
-                    transformed_row = [
-                        int((self.phorms_mod_table_df.loc[mod, 'Transformation'](value) % (max_value + 1)))
-                        if self.phorms_mod_table_df.loc[mod, 'Transformation'](value) >= 0
-                        else max_value  # If the result is negative, set it to max_value
-                        for value in A_Root_Copy
-                    ]
-                    # Add the transformed row to the list of modified versions
-                    modified_versions.append(transformed_row)
-
-            # Handle repetition based on the Repeater value
-            if Repeater == 0:
-                # If Repeater is zero, do not repeat the list of modified versions
-                repeated_rows = modified_versions
-            else:
-                # Repeat all modified versions based on the Repeater value
-                repeated_rows = modified_versions * Repeater
-
-            # Validate that repeated_rows is a list of arrays and all elements are integers
-            for array in repeated_rows:
-                if not isinstance(array, list):
-                    raise ValueError(f"Invalid structure: Expected a list, got {type(array)}")
-                if not all(isinstance(x, int) for x in array):
-                    raise ValueError(f"Invalid data type: All elements must be integers. Found: {array}")
-
-            # Store the result in the dictionary
-            transformed_data[f"alpha_phormed_{index.split('_')[-1]}"] = [repeated_rows]
-
-        # Create a new DataFrame from the transformed data with a single column
-        self.transphormed_alpha_dataframe = pd.DataFrame.from_dict(transformed_data, orient='index', columns=['Alpha_Phormed'])
-
-        print("\nTransformed Alpha DataFrame created.")
-        print(self.transphormed_alpha_dataframe)
-
-        return self.transphormed_alpha_dataframe
-
-    # Run the pipeline for the Enki class
+    # Run the pipeline for the Enki class (Data Generation Only)
     def run_pipeline(self):
+        """
+        Runs the complete data generation pipeline (Steps 1-20).
+        For transformations, use the AlphaTransformer class.
+        """
         # Step 1: Get user input for N
         self.N = self.Enki_User_Interface()
         if self.N is None:
             return
-        print(f"\nN: {self.N}")  # Print the value of N
+        print(f"\n[Step 1] N: {self.N}")
 
         # Step 2: Create the base array (phi_)
         self.create_base()
-        print(f"\nphi_: {self.phi_}")  # Print the value of phi_
+        print(f"\n[Step 2] phi_: {self.phi_}")
 
         # Step 3: Create a list of root arrays
         self.root_arrays()
+        print(f"\n[Step 3] Roots Arrays: {self.roots_list_}")
 
         # Step 4: Create kappa root arrays
         self.create_kappa_root_arrays()
+        print(f"\n[Step 4] Kappa Roots: {self.kappa_roots_}, Kappa Total: {self.kappa_total}")
 
         # Step 5: Create data triangle roots
         self.create_data_triangle_roots()
+        print(f"\n[Step 5] Data Triangle Roots: {self.data_triangle_roots}")
 
         # Step 6: Update roots w/ (theta)
         self.update_theta_root()
+        print(f"\n[Step 6] Data Triangle Roots w/ Theta: {self.data_triangle_roots}")
 
         # Step 7: Update roots w/ (lambda)
         self.update_lambda_root()
+        print(f"\n[Step 7] Data Triangle Roots w/ Lambda: {self.data_triangle_roots}")
 
         # Step 8: Update roots w/ (epsilon)
         self.update_epsilon_root()
+        print(f"\n[Step 8] Data Triangle Roots w/ Epsilon: {self.data_triangle_roots}")
 
         # Step 9: Update roots w/ (kappa_roots_)
         self.update_kappa_roots()
+        print(f"\n[Step 9] Data Triangle Roots w/ Kappa Roots: {self.data_triangle_roots}")
 
         # Step 10: Combine all values of Data Triangle
         self.combine_all_values_DT()
+        print(f"\n[Step 10] Combined Values of Data Triangle: {self.combined_values_of_data_triangle}")
 
         # Step 11: Create PVA array
         self.create_pva_array()
-        print(f"\nPVA Array: {self.pva_array}")
+        print(f"\n[Step 11] PVA Array: {self.pva_array}")
 
         # Step 12: Create DataFrame for data triangle
         self.create_DT_dataframe()
-        print(f"\nData Triangle DataFrame:\n{self.DT_df}")
+        print(f"\n[Step 12] Data Triangle DataFrame:\n{self.DT_df}")
 
         # Step 13: Create PVA Mods
         self.create_PVA_Mods()
-        print(f"\nPVA Mods:\n{self.PVA_Mods}")
+        print(f"\n[Step 13] PVA Mods:\n{self.PVA_Mods}")
 
         # Step 14: Create PVA Mods DF
         self.create_PVA_Mods_dataframe()
-        print(f"\nPVA Mods DataFrame:\n{self.PVA_Mods_df}")
+        print(f"\n[Step 14] PVA Mods DataFrame:\n{self.PVA_Mods_df}")
 
         # Step 15: Create Alpha Roots Rows
         self.create_alpha_roots_rows()
+        print(f"\n[Step 15] Alpha Roots Pre-Pivot:\n{self.alpha_roots_pre_pivot}")
 
         # Step 16: Create Alpha Roots Post Pivot
         self.create_alpha_roots_post_pivot()
+        print(f"\n[Step 16] Alpha Roots Post-Pivot:\n{self.alpha_roots_post_pivot}")
 
         # Step 17: Combine Alpha Roots
         self.combine_alpha_roots()
+        print(f"\n[Step 17] Combined Alpha Roots:\n{self.combined_alpha_roots}")
 
         # Step 18: Create Alpha Roots DataFrame
         self.create_alpha_roots_dataframe()
-        print(f"\nAlpha Roots DataFrame:\n{self.alpha_roots_df}")
+        print(f"\n[Step 18] Alpha Roots DataFrame:\n{self.alpha_roots_df}")
 
         # Step 19: Create Alpha Values
         self.create_alpha()
+        print(f"\n[Step 19] Alpha Values:\n{self.alpha_values}")
 
         # Step 20: Create Alpha Phorms DataFrame
         self.create_alpha_phorms_dataframe()
-        print(f"\nAlpha DataFrame (Phorms) :\n{self.alpha_phorms_dataframe}")
+        print(f"\n[Step 20] Alpha DataFrame (Phorms):\n{self.alpha_phorms_dataframe}")
 
-        # Step 21: Apply Phorms Mod Table DF
-        self.phorms_mod_table()
-        print(f"\nPhorms Mod Table ({self.mod_table_version} version):")
-        print(self.phorms_mod_table_df)
-
-        # Step 22: Transphorm Alpha Dataframe
-        self.transphorm_alpha_dataframe()
-
-        # Ensure the directory exists
-        output_dir = r"F:/Enki_V3/data/alpha_output"
-        os.makedirs(output_dir, exist_ok=True)
-        self.output_dir = output_dir
-
-        # Validate the structure of transphormed_alpha_dataframe
-        if self.transphormed_alpha_dataframe is not None:
-            for index, row in self.transphormed_alpha_dataframe.iterrows():
-                alpha_phormed = row['Alpha_Phormed']
-
-                # Check if the row is a list
-                if not isinstance(alpha_phormed, list):
-                    raise ValueError(f"Invalid structure at index {index}: Expected a list, got {type(alpha_phormed)}")
-
-                # Check each array in the list
-                for array_index, array in enumerate(alpha_phormed):
-                    if not isinstance(array, list):
-                        raise ValueError(f"Invalid structure in row {index}, array {array_index}: Expected a list, got {type(array)}")
-                    if not all(isinstance(x, int) for x in array):
-                        raise ValueError(f"Invalid data type in row {index}, array {array_index}: All elements must be integers. Found: {array}")
-
-        # Define the output file path
-        self.output_file = os.path.join(self.output_dir, f"alpha_transphormed_N{self.N}_phi_{'_'.join(map(str, self.phi_))}.pkl")
-
-        # Export the DataFrame
-        try:
-            if self.transphormed_alpha_dataframe is not None:
-                self.transphormed_alpha_dataframe.to_pickle(self.output_file)
-                print(f"\nTransformed Alpha DataFrame exported to '{self.output_file}'.")
-            else:
-                print("No data to export. The DataFrame is empty or undefined.")
-        except Exception as e:
-            print(f"Error exporting DataFrame: {e}")
-
-        print("\nEnki: Export completed successfully.")
+        print("\n" + "="*50)
+        print("Data Generation Complete!")
+        print("Use AlphaTransformer class for transformations.")
+        print("="*50)
+        
+        return self.get_alpha_data()
 
 
 if __name__ == "__main__":
