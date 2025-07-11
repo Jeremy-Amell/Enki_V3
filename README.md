@@ -8,55 +8,58 @@ The system is built with a clean separation of concerns:
 
 - **Data Generation** (`enki_class_v2.py`) - Handles steps 1-20 of the Enki pipeline
 - **Data Transformation** (`alpha_transformer.py`) - Handles all transformations and is extensible for music theory and decision trees
-- **Batch Processing** (`enki_batch.py`) - Complete executable script with multiple run modes
+- **Pipeline Runner** (`enki_pipeline.py`) - Complete executable script with multiple run modes
 
 ## 🚀 Quick Start
 
-### Option 1: Windows Batch File (Recommended)
-```bash
-# Full interactive pipeline
-f:\Enki_V3\run_enki.bat
-
-# Quick automated test
-f:\Enki_V3\run_enki.bat test
-
-# Demonstration mode
-f:\Enki_V3\run_enki.bat demo
-```
-
-### Option 2: Direct Python Execution
-```bash
-# Navigate to source directory
+### Interactive Pipeline (Recommended):
+```powershell
+# Navigate to the source directory
 cd f:\Enki_V3\src
 
-# Run full pipeline
-python enki_batch.py
+# Run the full interactive pipeline
+python enki_pipeline.py         # Prompts for N value and mod table selection
 
-# Quick test (no user input)
-python enki_batch.py test
-
-# Demo mode
-python enki_batch.py demo
-
-# Show help
-python enki_batch.py help
+# Other modes
+python enki_pipeline.py test    # Quick automated test
+python enki_pipeline.py demo    # Demonstrate flexibility
+python enki_pipeline.py help    # Show help
 ```
 
-### Option 3: From Any Directory
-```bash
-python f:\Enki_V3\src\enki_batch.py
+### Features:
+- **Interactive Data Generation**: User selects N value for the mathematical pipeline
+- **Musical Parameter Generation**: 
+  - `Chi`: Note durations/types (quarter, whole, eighth notes, etc.)
+  - `Theta`: Note pitches (A, B, C, C#, D, etc.)
+  - `Lambda`: Octave selection (register/pitch height)
+  - `Epsilon`: Musical modifiers (ties, slurs, dynamics, articulations)
+- **Musically-Aware Transformations**: Choose between transformation approaches:
+  - `default`: Standard mathematical transformations
+  - `increment`: Incremental mathematical transformations  
+  - `custom`: Custom mathematical transformations
+  - `chromatic`: Chromatic pitch mapping (12-tone scale) - General Theta focus
+  - `rhythmic`: Chi-focused (note durations, tempo, subdivisions)
+  - `harmonic`: Theta-focused (chord building, harmonic relationships)
+  - `modal`: Theta variations (major, minor, modal scales)
+  - `octave`: Lambda-focused (register shifts, octave transpositions)
+- **Multiple Run Modes**: Interactive, test, demo, and help modes
+
+### From Any Directory:
+```powershell
+# Run from anywhere
+python f:\Enki_V3\src\enki_pipeline.py
+python f:\Enki_V3\src\enki_pipeline.py test
 ```
 
 ## 📁 Project Structure
 
 ```
 Enki_V3/
-├── run_enki.bat              # Windows batch runner
 ├── README.md                 # This file
 ├── src/
 │   ├── enki_class_v2.py      # Core data generation (Steps 1-20)
 │   ├── alpha_transformer.py  # Transformation engine
-│   ├── enki_batch.py         # Complete executable script
+│   ├── enki_pipeline.py      # Main executable script
 │   ├── phorms_mod_table.py   # Mod table functions
 │   └── [other modules...]
 ├── data/
@@ -120,7 +123,7 @@ transformer.apply_decision_tree_transform(data, decision_rules)
 
 ### Running Tests
 ```bash
-python enki_batch.py test
+python enki_pipeline.py test
 ```
 
 ### Architecture Benefits
