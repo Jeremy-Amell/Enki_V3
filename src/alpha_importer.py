@@ -533,10 +533,10 @@ class AlphaImporter:
                                 has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
                     else:
                         # Option 4 is "Quit" when no metadata
-                        print("👋 Goodbye!")
+                        print("\n👋 Goodbye!\n")
                         break
                 elif choice == '5' and has_metadata:
-                    print("👋 Goodbye!")
+                    print("\n👋 Goodbye!\n")
                     break
                 else:
                     print(f"❌ Invalid choice. Please select 1-{max_choice}.")
