@@ -453,12 +453,121 @@ class AlphaImporter:
         print("   ⏳ MusicXML generation: [TO BE IMPLEMENTED]")
         print()
         print("💡 Next development steps:")
-        print("   1. Create encoding mapper class")
-        print("   2. Integrate with existing encoding modules (Chi, Theta, Lambda, Epsilon)")
-        print("   3. Map integer arrays to musical parameters")
-        print("   4. Generate MusicXML output files")
+        print("   1. ✅ PHASE TRANSITION: Moving to cryptographic development")
+        print("   2. 🔐 Extract mathematical primitives from musical algorithms")
+        print("   3. 🔒 Implement revolutionary musical cryptography engine")
+        print("   4. 📋 Document algorithms for patent filing")
+        print("   5. ⚖️  File patent applications before any public disclosure")
         print(f"{'='*60}")
-        print("🎵 Ready for encoding implementation!")
+        print("🔐 CONFIDENTIAL: Ready for cryptographic implementation!")
+        print("⚠️  PATENT PENDING - KEEP DEVELOPMENT CONFIDENTIAL")
+
+    def extract_cryptographic_primitives(self) -> None:
+        """
+        CONFIDENTIAL: Extract mathematical primitives from musical algorithms for cryptographic use.
+        
+        This method begins the transformation from musical intelligence to cryptographic strength.
+        DO NOT EXPOSE PUBLICLY UNTIL PATENT PROTECTION IS SECURED.
+        """
+        if self.loaded_data is None:
+            print("❌ No data loaded. Please load a file first.")
+            return
+        
+        print(f"\n{'='*60}")
+        print("🔐 EXTRACTING CRYPTOGRAPHIC PRIMITIVES")
+        print(f"{'='*60}")
+        print("⚠️  CONFIDENTIAL DEVELOPMENT - PATENT PENDING")
+        print(f"Source file: {self.current_file}")
+        
+        # Import crypto core (keep import local for security)
+        try:
+            from enki_crypto_core import EnkiCryptoCore
+            
+            # Initialize crypto engine with our alpha data
+            df = self.get_dataframe()
+            crypto_engine = EnkiCryptoCore(df)
+            
+            # Extract mathematical foundation
+            print("\n🔬 Extracting mathematical foundation from musical algorithms...")
+            crypto_primitives = crypto_engine.extract_mathematical_foundation()
+            
+            print("✅ Cryptographic primitives extracted successfully!")
+            print(f"   - Chi mathematics: {len(crypto_primitives.get('chi_mathematics', {}))} components")
+            print(f"   - Theta mathematics: {len(crypto_primitives.get('theta_mathematics', {}))} components") 
+            print(f"   - Lambda mathematics: {len(crypto_primitives.get('lambda_mathematics', {}))} components")
+            print(f"   - Epsilon mathematics: {len(crypto_primitives.get('epsilon_mathematics', {}))} components")
+            print(f"   - Mod table context: Available")
+            
+            print(f"\n💡 Mathematical primitives ready for encryption implementation!")
+            print("🔐 KEEP CONFIDENTIAL - PATENT PENDING")
+            
+            return crypto_primitives
+            
+        except ImportError as e:
+            print(f"❌ Error importing crypto core: {e}")
+            print("   Make sure enki_crypto_core.py is in the src directory")
+        except Exception as e:
+            print(f"❌ Error extracting cryptographic primitives: {e}")
+
+    def test_encryption_decryption(self) -> None:
+        """
+        CONFIDENTIAL: Test encryption and decryption using musical algorithm intelligence.
+        
+        This method demonstrates the revolutionary cryptographic capabilities.
+        DO NOT EXPOSE PUBLICLY UNTIL PATENT PROTECTION IS SECURED.
+        """
+        if self.loaded_data is None:
+            print("❌ No data loaded. Please load a file first.")
+            return
+        
+        print(f"\n{'='*60}")
+        print("🔐 TESTING MUSICAL CRYPTOGRAPHY ENGINE")
+        print(f"{'='*60}")
+        print("⚠️  CONFIDENTIAL DEVELOPMENT - PATENT PENDING")
+        print(f"Source file: {self.current_file}")
+        
+        try:
+            from enki_crypto_core import EnkiCryptoCore
+            
+            # Initialize crypto engine
+            df = self.get_dataframe()
+            crypto_engine = EnkiCryptoCore(df)
+            
+            # Get test message from user
+            test_message = input("\n🔤 Enter message to encrypt (or press Enter for default): ").strip()
+            if not test_message:
+                test_message = "Revolutionary musical cryptography test message!"
+            
+            print(f"\n📝 Original message: '{test_message}'")
+            
+            # Encrypt the message
+            print("\n🔒 Encrypting using musical algorithm intelligence...")
+            encrypted_data = crypto_engine.encrypt_message(test_message)
+            print(f"✅ Encryption complete!")
+            print(f"   - Original length: {len(test_message)} characters")
+            print(f"   - Encrypted length: {len(encrypted_data)} bytes")
+            
+            # Decrypt the message
+            print("\n🔓 Decrypting using musical algorithm intelligence...")
+            decrypted_message = crypto_engine.decrypt_message(encrypted_data)
+            print(f"✅ Decryption complete!")
+            print(f"📝 Decrypted message: '{decrypted_message}'")
+            
+            # Verify integrity
+            if test_message == decrypted_message:
+                print("\n✅ ENCRYPTION/DECRYPTION TEST SUCCESSFUL!")
+                print("🔐 Musical cryptography engine is operational!")
+            else:
+                print("\n❌ ENCRYPTION/DECRYPTION TEST FAILED!")
+                print("🔧 Algorithm implementation needs refinement.")
+            
+            print(f"\n💡 Revolutionary musical cryptography demonstrated!")
+            print("🔐 KEEP CONFIDENTIAL - PATENT PENDING")
+            
+        except ImportError as e:
+            print(f"❌ Error importing crypto core: {e}")
+        except Exception as e:
+            print(f"❌ Error during encryption/decryption test: {e}")
 
     def run_interactive_session(self) -> None:
         """
@@ -491,15 +600,17 @@ class AlphaImporter:
             print("1. Display transformed dataframe")
             if has_metadata:
                 print("2. Display metadata")
-                print("3. Encode to MusicXML")
+                print("3. Extract cryptographic primitives")
+                print("4. Test encryption/decryption")
+                print("5. Select different file")
+                print("6. Quit")
+                max_choice = 6
+            else:
+                print("2. Extract cryptographic primitives")
+                print("3. Test encryption/decryption")
                 print("4. Select different file")
                 print("5. Quit")
                 max_choice = 5
-            else:
-                print("2. Encode to MusicXML")
-                print("3. Select different file")
-                print("4. Quit")
-                max_choice = 4
             
             try:
                 choice = input(f"\nSelect option (1-{max_choice}): ").strip()
@@ -510,32 +621,39 @@ class AlphaImporter:
                     if has_metadata:
                         self.display_metadata()
                     else:
-                        # Option 2 is "Encode to MusicXML" when no metadata
-                        self.encode_to_musicxml()
+                        # Option 2 is "Extract cryptographic primitives" when no metadata
+                        self.extract_cryptographic_primitives()
                 elif choice == '3':
                     if has_metadata:
-                        # Option 3 is "Encode to MusicXML" when metadata available
-                        self.encode_to_musicxml()
+                        # Option 3 is "Extract cryptographic primitives" when metadata available
+                        self.extract_cryptographic_primitives()
                     else:
-                        # Option 3 is "Select different file" when no metadata
-                        filename = self.select_file_interactive()
-                        if filename:
-                            if self.load_file(filename):
-                                # Re-check metadata availability for new file
-                                has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
+                        # Option 3 is "Test encryption/decryption" when no metadata
+                        self.test_encryption_decryption()
                 elif choice == '4':
                     if has_metadata:
-                        # Option 4 is "Select different file" when metadata available
+                        # Option 4 is "Test encryption/decryption" when metadata available
+                        self.test_encryption_decryption()
+                    else:
+                        # Option 4 is "Select different file" when no metadata
+                        filename = self.select_file_interactive()
+                        if filename:
+                            if self.load_file(filename):
+                                # Re-check metadata availability for new file
+                                has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
+                elif choice == '5':
+                    if has_metadata:
+                        # Option 5 is "Select different file" when metadata available
                         filename = self.select_file_interactive()
                         if filename:
                             if self.load_file(filename):
                                 # Re-check metadata availability for new file
                                 has_metadata = isinstance(self.loaded_data, dict) and len(self.get_metadata()) > 0
                     else:
-                        # Option 4 is "Quit" when no metadata
+                        # Option 5 is "Quit" when no metadata
                         print("\n👋 Goodbye!\n")
                         break
-                elif choice == '5' and has_metadata:
+                elif choice == '6' and has_metadata:
                     print("\n👋 Goodbye!\n")
                     break
                 else:
