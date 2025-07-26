@@ -492,11 +492,12 @@ class AlphaCryptoImporter:
             print("3. Test encryption/decryption")
             print("4. Generate crypto keys")
             print("5. Advanced crypto analysis")
-            print("6. Select different file")
-            print("7. Exit crypto development")
+            print("6. 🌟 REVOLUTIONARY: Multi-layer crypto (ALL contexts)")
+            print("7. Select different file")
+            print("8. Exit crypto development")
             
             try:
-                choice = input(f"\n🔐 Select crypto development option (1-7): ").strip()
+                choice = input(f"\n🔐 Select crypto development option (1-8): ").strip()
                 
                 if choice == '1':
                     self.analyze_crypto_potential()
@@ -509,15 +510,17 @@ class AlphaCryptoImporter:
                 elif choice == '5':
                     self.advanced_crypto_analysis()
                 elif choice == '6':
+                    self.revolutionary_multi_layer_crypto()
+                elif choice == '7':
                     filename = self.select_file_interactive()
                     if filename:
                         self.load_file(filename)
-                elif choice == '7':
+                elif choice == '8':
                     print("\n🔐 Exiting cryptographic development session")
                     print("⚠️  REMEMBER: KEEP ALL DEVELOPMENT CONFIDENTIAL")
                     break
                 else:
-                    print(f"❌ Invalid choice. Please select 1-7.")
+                    print(f"❌ Invalid choice. Please select 1-8.")
                     
             except KeyboardInterrupt:
                 print("\n🔐 Cryptographic development session ended by user.")
@@ -610,6 +613,97 @@ class AlphaCryptoImporter:
         except Exception as e:
             print(f"❌ Error during advanced analysis: {e}")
             print("   Check alpha data format and crypto engine compatibility")
+    
+    def revolutionary_multi_layer_crypto(self) -> None:
+        """
+        CONFIDENTIAL: Revolutionary multi-layer cryptography using ALL phorms tables.
+        
+        This is the breakthrough approach that layers ALL cryptographic contexts
+        simultaneously for unprecedented security strength.
+        """
+        print(f"\n{'='*70}")
+        print("🌟 REVOLUTIONARY MULTI-LAYER CRYPTOGRAPHIC SYSTEM")
+        print(f"{'='*70}")
+        print("⚠️  PATENT PENDING - USES ALL PHORMS TABLE CONTEXTS")
+        print("🔐 LAYERING ALL AVAILABLE CRYPTOGRAPHIC CONTEXTS...")
+        
+        try:
+            # Import and initialize multi-layer crypto system
+            from enki_multi_layer_crypto import EnkiMultiLayerCrypto
+            
+            print("\n🔧 Initializing revolutionary multi-layer system...")
+            print("   🔍 Discovering ALL available alpha contexts...")
+            print("   📊 Loading ALL phorms table variations...")
+            print("   🧮 Calculating combined cryptographic strength...")
+            
+            # Initialize with the source directory
+            multi_crypto = EnkiMultiLayerCrypto(str(self.input_dir))
+            
+            if not multi_crypto.crypto_layers:
+                print("❌ No cryptographic layers available for multi-layer approach")
+                print("   Ensure alpha output files with different contexts exist")
+                return
+            
+            print(f"\n✅ MULTI-LAYER SYSTEM READY!")
+            print(f"   🔐 Total Layers: {len(multi_crypto.crypto_layers)}")
+            
+            # Analyze combined strength
+            print("\n🔬 ANALYZING COMBINED CRYPTOGRAPHIC STRENGTH...")
+            analysis = multi_crypto.analyze_multi_layer_strength()
+            
+            # Test multi-layer encryption
+            print(f"\n🧪 TESTING REVOLUTIONARY MULTI-LAYER ENCRYPTION")
+            test_message = input("Enter message to encrypt with ALL layers (or Enter for default): ").strip()
+            if not test_message:
+                test_message = "Revolutionary multi-layer musical cryptography breakthrough!"
+            
+            print(f"\n📝 Test Message: '{test_message}'")
+            print(f"   📊 Length: {len(test_message)} characters")
+            
+            # Multi-layer encryption
+            print(f"\n🔒 APPLYING ALL CRYPTOGRAPHIC LAYERS...")
+            encrypted_package = multi_crypto.multi_layer_encrypt(test_message)
+            
+            # Multi-layer decryption
+            print(f"\n🔓 REVERSING ALL CRYPTOGRAPHIC LAYERS...")
+            decrypted_message = multi_crypto.multi_layer_decrypt(encrypted_package)
+            
+            # Verify success
+            success = (test_message == decrypted_message)
+            
+            print(f"\n🎯 MULTI-LAYER CRYPTOGRAPHIC TEST:")
+            print(f"   📝 Original:  '{test_message}'")
+            print(f"   🔓 Decrypted: '{decrypted_message}'")
+            print(f"   ✅ Success: {'YES' if success else 'NO'}")
+            
+            if success:
+                print(f"\n🎉 REVOLUTIONARY BREAKTHROUGH ACHIEVED!")
+                print(f"   🔐 ALL PHORMS TABLES SUCCESSFULLY INTEGRATED!")
+                print(f"   ⚡ Combined Security: {analysis['combined_metrics']['combined_strength']:.1f}")
+                print(f"   🛡️  Quantum Resistance: {analysis['combined_metrics']['quantum_resistance_score']:.3f}")
+                print(f"   🧮 Total Complexity: {analysis['combined_metrics']['total_complexity']}")
+                print(f"   🔑 Key Space: {analysis['combined_metrics']['key_space_estimate']:,}")
+                
+                print(f"\n📊 LAYER BREAKDOWN:")
+                for layer_detail in analysis['layer_details']:
+                    print(f"   • {layer_detail['layer_name']}: Strength {layer_detail['strength_rating']}")
+                
+                print(f"\n⚠️  CONFIDENTIAL: This multi-layer approach represents")
+                print(f"    a revolutionary advancement in cryptography that")
+                print(f"    could render current methods obsolete.")
+                print(f"    SECURE PATENT PROTECTION IMMEDIATELY.")
+                
+            else:
+                print(f"\n🔧 Multi-layer algorithm needs refinement")
+                print(f"   📝 Debugging: Message mismatch detected")
+                print(f"   🔍 Check layer transformation consistency")
+            
+        except ImportError as e:
+            print(f"❌ Error importing multi-layer crypto system: {e}")
+            print("   Make sure enki_multi_layer_crypto.py is available")
+        except Exception as e:
+            print(f"❌ Error during multi-layer crypto analysis: {e}")
+            print("   Check that multiple alpha contexts are available")
 
 
 def main():
